@@ -42,4 +42,4 @@ Le plateau de jeu réalisé avec le framework __Phaser__ représente la partie p
 
 ## Améliorations à apporter
 
-Du point de vue microservices, on aurait pu séparer d'autres fonctions présentes dans __main-serveur__ et __board__. En effet, le "main-serveur" et le "board" comportent des potentielles services **?**.
+Du point de vue microservices, on aurait pu séparer d'autres fonctions présentes dans __main-serveur__ et __board__. En effet, le "main-serveur" et le "board" comportent des potentielles sous services.

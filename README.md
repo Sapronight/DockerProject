@@ -29,7 +29,7 @@ Avant de lancer le jeu, deux joueurs doivent rejoindre une salle préalablement 
 
 Depuis la base de notre projet déjà réalisé, il a fallu décider quelles parties étaient les plus pertinentes à scinder afin d'obtenir plusieurs microservices.
 On a donc décidé de séparer le côté création d'une nouvelle instance et le chat du côté plateau de jeu en deux services distincts. 
-Nous avons fait ce choix afin de faciliter l'adaptation du code de base à une séparation en différent conteneur et une question de clareté du code.
+Nous avons fait ce choix afin de faciliter l'adaptation du code de base à une séparation en différents conteneurs mais aussi pour une question de clareté du code.
 On obtient donc les services suivants :
 
 ### main-server

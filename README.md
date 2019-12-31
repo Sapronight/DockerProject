@@ -42,4 +42,6 @@ Le plateau de jeu réalisé avec le framework __Phaser__ représente la partie p
 
 ## Améliorations à apporter
 
-Du point de vue microservices, on aurait pu séparer d'autres fonctions présentes dans __main-serveur__ et __board__. En effet, le "main-serveur" et le "board" comportent des potentielles sous services.
+Du point de vue microservices, on aurait pu séparer d'autres fonctions présentes dans __main-serveur__ et __board__ afin de faciliter la compréhension du code car certaines de leurs fonctions peuvent être des sous-services.
+
+D'autre part, on pourrait passer main-server/server_routing.js en proxy afin de gérer l'ensemble des flux de l'utilisateur qui ne communique qu'avec un seul service.

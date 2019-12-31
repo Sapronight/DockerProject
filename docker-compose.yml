@@ -1,0 +1,8 @@
+version: '3'
+services:
+  main_server:
+    container_name: "main-server"
+    restart: always
+    build: ./main-server/
+    ports:
+    - "3000:3000"

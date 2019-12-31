@@ -50,6 +50,7 @@ exports.apply_routing = (app, io, rooms, players) => {
 
     app.get('/:room/play', (req, res) => {
         //res.render('board_test', {roomName: req.params.room})
+        /*
         const room = req.params.room;
         const playerData = req.query.playerData;
         const roomsData = req.query.roomsData;
@@ -66,7 +67,12 @@ exports.apply_routing = (app, io, rooms, players) => {
         else {
             // TODO: redirect all the users in he current room to the room section
             res.redirect(`/${req.params.room}`);
-        }
+        }*/
+        const room = req.params.room;
+        const playerData = req.query.playerData;
+        const roomsData = req.query.roomsData;
+        res.redirect(`http://localhost:5000/${room}/play?playerData=${playerData}&roomsData=${roomsData}`)
+
     });
 
     exports.getUserRooms = (socket) => {

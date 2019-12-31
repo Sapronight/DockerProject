@@ -89,7 +89,7 @@ socket.on('start-game', (players_room, rooms_room) => {
     const playerData = JSON.stringify(players_room.users[socket.id]);
     const roomsData = rooms_room.users[socket.id];
 
-    window.location.href = `/${room}/play?playerData=${playerData}&roomsData=${roomsData}`
+    window.location.href = `http://localhost:5000/${room}/play?playerData=${playerData}&roomsData=${roomsData}`
 });
 
 function appendMessage(message) {

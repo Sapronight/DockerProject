@@ -1,4 +1,13 @@
-var config = {
+const socket = io('http://localhost:3000');
+// Ejs DATA loading
+const player_Data = JSON.parse(decodeHTML(playerData));
+const rooms_Data = decodeHTML(roomsData);
+
+// Ejs Containers
+const playerNameRoleContainer = document.getElementById('player-name-role-container');
+
+
+let config = {
     type: Phaser.AUTO,
     width: 1520,
     height: 700,
@@ -57,17 +66,6 @@ function preload () {
     //this.load.setBaseURL('http://labs.phaser.io');
 
     //Board
-<<<<<<< HEAD:board_base_script.js
-    this.load.image('bckgnd', './images/fonds/test1.png');
-    this.load.image('pc', 'images/postes/computer_board.png');
-    this.load.image('line', 'images/postes/line.png');
-    this.load.image('line2', 'images/postes/line2.png');
-    this.load.image('coude', 'images/postes/coude2.png');
-    this.load.image('coude2', 'images/postes/coude3.png');
-    this.load.image('coude3', 'images/postes/coude4.png');
-    this.load.image('coude4', 'images/postes/coude5.png');
-    this.load.spritesheet('pcSeveral', 'images/postes/computer_spritesheet.png', { frameWidth: 512, frameHeight: 512 });
-=======
     this.load.image('bckgnd', '../images/fonds/test1.png');
     this.load.image('pc', '../images/postes/computer_board.png');
     this.load.image('line', '../images/postes/line.png');
@@ -76,7 +74,6 @@ function preload () {
     this.load.image('coude2', '../images/postes/coude3.png');
     this.load.image('coude3', '../images/postes/coude4.png');
     this.load.image('coude4', '../images/postes/coude5.png');
->>>>>>> 94b6f8375a8f6cb4bba2c2ed549bb843d58e18ce:public/board_base_script.js
 
     //Joueurs
     this.load.image('admin_icon', '../images/joueur/admin_icon.png');
@@ -86,36 +83,23 @@ function preload () {
 
     //Cartes
     this.load.image('admin_carte', '../images/cartes/carte_admin.png');
-    this.load.image('hacker_carte', '../images/cartes/back_carte_hacker.png');
 
     //this.load.image('red', 'assets/particles/red.png');
 }
 
 function create () {
-    var self = this;
-    this.socket = io()
+    // Client Part
+    // Reload function :
+    socket.emit('phaser-reload', roomName, player_Data, rooms_Data);
+    const current_role = player_Data.role;
+    const current_user_name = rooms_Data;
+
+    // Update the name/role container
+    updateNameRoleContainer(current_user_name, current_role);
+
+    // Base for all of the users
     //Background
     this.add.image(760, 350, 'bckgnd');
-    /*
-    poste = this.physics.add.sprite(700, 300, 'pcSeveral');
-    poste.setCollideWorldBounds(true);
-    */
-    
-    //Joueur Admin
-    this.add.image(100, 630, 'admin_icon').setScale(0.5);
-    admin_power = this.add.sprite(210, 650, 'admin_power').setInteractive().setScale(0.4);
-    admin_power.on('pointerdown', use_AdminPower);
-    admin_power.on('pointerover', zoomInPower);
-    admin_power.on('pointerout', zoomOutPower);
-    actionAdminText = this.add.text(1300, 650, 'Actions: 0', { fontSize: '28px', fill: '#000' });
-
-    //Joueur Hacker
-    this.add.image(100, 80, 'hacker_icon').setScale(0.5);
-    hacker_power = this.add.sprite(210, 50, 'hacker_power').setInteractive().setScale(0.4);
-    hacker_power.on('pointerdown', use_HackerPower);
-    hacker_power.on('pointerover', zoomInPower);
-    hacker_power.on('pointerout', zoomOutPower);
-    actionHackerText = this.add.text(1300, 16, 'Actions: 0', { fontSize: '28px', fill: '#000' });
 
     // POSTES
     poste1 = this.physics.add.staticGroup();
@@ -129,6 +113,7 @@ function create () {
     poste9 = this.physics.add.staticGroup();
     poste10 = this.physics.add.staticGroup();
     poste11 = this.physics.add.staticGroup();
+
 
     //Postes joueur
     poste1.create(480, 550, 'pc').setScale(0.2).refreshBody();
@@ -154,7 +139,6 @@ function create () {
     coude2 = this.physics.add.staticGroup();
     coude3 = this.physics.add.staticGroup();
     coude4 = this.physics.add.staticGroup();
-
     line.create(622,550, 'line').setScale(1.2).refreshBody();
     line.create(902,550, 'line').setScale(1.2).refreshBody();
     line2.create(1028,250, 'line2').setScale(0.8).refreshBody();
@@ -174,47 +158,63 @@ function create () {
     coude.create(312,473, 'coude').setScale(1.01).refreshBody();
     coude3.create(1200,473, 'coude3').setScale(1).refreshBody();
 
-    //Cartes admin
-    admin_carte = this.add.sprite(760, 680, 'admin_carte').setInteractive().setScale(0.5);
-    admin_carte.on('pointerover', cardZoomIn);
-    admin_carte.on('pointerout', cardZoomOut);
-    this.input.setDraggable(admin_carte);
-    this.input.on('dragstart', startDrag); 
-    this.input.on('drag', onDrag);          
-    this.input.on('dragend', endDrag);
+    // If the role of the current user is admin :
+    if (current_role === 'admin'){
+        //Joueur Admin
+        this.add.image(100, 630, 'admin_icon').setScale(0.5);
+        admin_power = this.add.sprite(210, 650, 'admin_power').setInteractive().setScale(0.4);
+        admin_power.on('pointerdown', use_AdminPower);
+        admin_power.on('pointerover', zoomInPower);
+        admin_power.on('pointerout', zoomOutPower);
+        actionAdminText = this.add.text(1300, 650, 'Actions: 0', { fontSize: '28px', fill: '#000' });
 
-    //Cartes hacker
-    hacker_carte = this.add.sprite(760, 680, 'hacker_carte').setInteractive().setScale(0.5);
-    hacker_carte.on('pointerover', cardZoomIn);
-    hacker_carte.on('pointerout', cardZoomOut);
-    this.input.setDraggable(hacker_carte);
-    this.input.on('dragstart', startDrag); 
-    this.input.on('drag', onDrag);          
-    this.input.on('dragend', endDrag);
 
+        //Cartes admin
+        admin_carte = this.add.sprite(760, 680, 'admin_carte').setInteractive().setScale(0.5);
+        admin_carte.on('pointerover', cardZoomIn);
+        admin_carte.on('pointerout', cardZoomOut);
+        this.input.setDraggable(admin_carte);
+        this.input.on('dragstart', startDrag); //Je ne comprends pas cette ligne: quand je remplace this par admin_carte, ça casse tout
+        this.input.on('drag', onDrag);          //Et du coup, je ne sais pas ce qu'il se passera si on met plusieurs draggable items
+        this.input.on('dragend', endDrag);
+    }
+
+    // If the role of the current user is hacker :
+    if (current_role === 'hacker'){
+        //Joueur Hacker
+        this.add.image(100, 630, 'hacker_icon').setScale(0.5);
+        admin_power = this.add.sprite(210, 650, 'hacker_power').setInteractive().setScale(0.4);
+        admin_power.on('pointerdown', use_HackerPower);
+        admin_power.on('pointerover', zoomInPower);
+        admin_power.on('pointerout', zoomOutPower);
+        actionAdminText = this.add.text(1300, 650, 'Actions: 0', { fontSize: '28px', fill: '#000' });
+    }
 
     /* Si on besoin de faire des particules à un moment -\_(ツ)_/-
-    let particles = this.add.particles('red');
-    let emitter = particles.createEmitter({
+    var particles = this.add.particles('red');
+
+    var emitter = particles.createEmitter({
         speed: 100,
         scale: { start: 1, end: 0 },
         blendMode: 'ADD'
     });
-    let logo = this.physics.add.image(400, 100, 'logo');
+
+    var logo = this.physics.add.image(400, 100, 'logo');
+
     logo.setVelocity(100, 200);
     logo.setBounce(1, 1);
     logo.setCollideWorldBounds(true);
+
     emitter.startFollow(logo);
     */
 }
 
 //Ca c'est comme en Unity
 function update() {
-    
+
 }
 
 //FONCTIONS
-
 //Fonctions qui regardent si une action a été faite et si oui màj le compteur d'actions
 function actions_admin () {
     return null;
@@ -262,4 +262,16 @@ function onDrag(pointer, gameObject, dragX, dragY) {
 
 function endDrag(pointer, gameObject) {
     gameObject.setScale(0.5);
+}
+
+
+// Core Function
+function decodeHTML(html) {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+}
+
+function updateNameRoleContainer(name, role) {
+    playerNameRoleContainer.innerText = `Welcome : ${name} you are the : ${role}`
 }

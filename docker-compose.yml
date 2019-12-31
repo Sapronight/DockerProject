@@ -6,3 +6,9 @@ services:
     build: ./main-server/
     ports:
     - "3000:3000"
+  board:
+    container_name: "board"
+    restart: always
+    build: ./board/
+    ports:
+    - "5000:5000"
